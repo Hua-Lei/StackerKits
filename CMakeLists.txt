@@ -24,6 +24,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         aspectwidget.h aspectwidget.cpp
+        previewboard.h previewboard.cpp
+        board.cpp board.h cell.cpp cell.h engine.cpp engine.h nextbag.cpp nextbag.h piece.cpp piece.h
+        board.cpp board.h
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET StackerKits APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
