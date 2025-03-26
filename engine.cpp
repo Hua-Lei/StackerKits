@@ -1,10 +1,16 @@
 #include "engine.h"
 #include <qwidget.h>
 
+const int lockTime = 1000;
 Engine::Engine(Piece* currentPiece, Board* board, QObject *parent)
     : QObject{parent},currentPiece{currentPiece},board{board}
 {
-    *currentPiece=Piece(nexts.dequeue(),QPoint(1,4));
+    *currentPiece=Piece(nexts.dequeue(),QPoint(4,1));
+    gravityTimer = new QTimer(this);
+    connect(gravityTimer,&QTimer::timeout,this,&Engine::moveDown);
+    gravityTimer->start(500);
+    initPiecePos();
+    holdPieceType = Invaild;
 }
 
 bool Engine::isCollision(QVector<QPoint>& points, QPoint pos) {
@@ -49,6 +55,14 @@ bool Engine::moveDown() {
     int x = pos.x();
     int y = pos.y();
     if(isCollision(points, QPoint(x,y+1))) {
+        if(lockTimer.isValid()) {
+            if(lockTimer.elapsed()>=lockTime) {
+                lock(); //lockTimer.invalidate() is contained in lock()
+            }
+        }
+        else {
+            lockTimer.start();
+        }
         return false;
     }
     else {
@@ -235,8 +249,11 @@ void Engine::lock() {
     examineAndClearLines(rows);
 
 
-    *currentPiece=Piece(nexts.dequeue(),QPoint(1,4));
+    *currentPiece=Piece(nexts.dequeue(),QPoint(4,1));
+    initPiecePos();
     emit updateRequired();
+    emit pieceTypeChanged();
+    lockTimer.invalidate();
     return;
 }
 
@@ -279,6 +296,20 @@ void Engine::examineAndClearLines(QSet<int> lines) { //no same line
 
 }
 
+void Engine::hold() {
+    if(holdPieceType == Invaild) {
+        holdPieceType = currentPiece->pieceType();
+        *currentPiece=Piece(nexts.dequeue(),QPoint(4,1));
+    } else {
+        PieceType holdedType = holdPieceType;
+        holdPieceType = currentPiece->pieceType();
+        *currentPiece=Piece(holdedType,QPoint(4,1));
+        initPiecePos();
+    }
+    emit updateRequired();
+    emit pieceTypeChanged();
+}
+
 QPair<QPoint,QColor> Engine::getShadowPos(Piece* piece) {
     auto [points,pos] = piece->getPieceLoc();
     int x = pos.x();
@@ -287,4 +318,13 @@ QPair<QPoint,QColor> Engine::getShadowPos(Piece* piece) {
         y+=1;
     }
     return {{x,y},piece->colorMap[piece->type]};
+}
+
+void Engine::initPiecePos() {
+    currentPiece->setPos(QPoint(4,1));
+    auto [points,pos] = currentPiece->getPieceLoc();
+    if(isCollision(points,pos)) {
+        qDebug()<<"gameover!";
+    }
+    emit updateRequired();
 }

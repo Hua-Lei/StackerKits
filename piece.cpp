@@ -13,9 +13,9 @@ Piece::Piece(PieceType type, QPoint initPos)
         break;
     case PieceType::O:
         cells = {Cell(colorMap[O], QPoint(0,0)),
-                 Cell(colorMap[O], QPoint(1,0)),
-                Cell(colorMap[O], QPoint(0,1)),
-                Cell(colorMap[O], QPoint(1,1))};
+                 Cell(colorMap[O], QPoint(-1,0)),
+                Cell(colorMap[O], QPoint(0,-1)),
+                Cell(colorMap[O], QPoint(-1,-1))};
         break;
     case PieceType::T:
         cells = {Cell(colorMap[T], QPoint(0,0)),

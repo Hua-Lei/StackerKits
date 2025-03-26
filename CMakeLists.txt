@@ -27,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         previewboard.h previewboard.cpp
         board.cpp board.h cell.cpp cell.h engine.cpp engine.h nextbag.cpp nextbag.h piece.cpp piece.h
         board.cpp board.h
+        gameboard.h gameboard.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET StackerKits APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

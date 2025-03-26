@@ -14,8 +14,11 @@ void NextBag::AddBag() {
 }
 
 PieceType NextBag::dequeue() {
-    if(currentBag.isEmpty()) {
+    if(currentBag.size()<=7) {
         AddBag();
     }
     return currentBag.dequeue();
+}
+PieceType NextBag::at(int n) {
+    return currentBag[n];
 }

@@ -11,6 +11,7 @@ class NextBag : QObject
 public:
     NextBag();
     void AddBag();
+    PieceType at(int n);
     PieceType dequeue();
 
 private:

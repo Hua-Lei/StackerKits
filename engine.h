@@ -5,6 +5,7 @@
 #include "piece.h"
 #include <QKeyEvent>
 #include <algorithm>
+#include <QTimer>
 #include <QWidget>
 #include "board.h"
 #include "nextbag.h"
@@ -19,15 +20,20 @@ public:
     bool hardDrop();
     bool moveDown();
     void lock();
+    void hold();
     void rotateLeft();
     void rotateRight();
+    void initPiecePos();
     bool isFilledLine(int line);
+    PieceType holdPieceType;
     QPair<QPoint,QColor> getShadowPos(Piece* piece);
     void examineAndClearLines(QSet<int> lines);
     int rotTypeDirectedDistance(RotationType init, RotationType target);
     QPair<QVector<QPoint>,QPoint> rotateAttemptRes(RotationType init, RotationType target);
-private:
     NextBag nexts;
+private:
+    QElapsedTimer lockTimer;
+    QTimer* gravityTimer;
     Piece* currentPiece;
     Board* board;
     QMap<QPair<RotationType,RotationType>,QVector<QPoint>> offsetTableMain = {{{Init,R90},{QPoint(0,0),QPoint(-1,0),QPoint(-1,-1),QPoint(0,2),QPoint(-1,2)}},
@@ -51,6 +57,7 @@ private:
                                                                         };
 signals:
     void updateRequired();
+    void pieceTypeChanged();
 };
 
 #endif // ENGINE_H

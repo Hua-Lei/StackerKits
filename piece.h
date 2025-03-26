@@ -5,7 +5,7 @@
 #include <QPair>
 #include <QMap>
 #include "cell.h"
-enum PieceType {I,O,S,Z,T,L,J};
+enum PieceType {I,O,S,Z,T,L,J,Invaild};
 enum RotationType {Init,R90,M180,L90};
 class Engine;
 class Piece
