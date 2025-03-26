@@ -21,7 +21,9 @@ public:
     void processKeys();
     PieceType* holdPieceTypePtr();
     NextBag* nextsPtr();
+    void terminate(){isGameOver = true;update();};
 private:
+    bool isGameOver;
     Piece* currentPiece = nullptr;
     QMap<PieceType,QString> colorMap = {{I,"cyan"},{O,"yellow"},{T,"purple"},{S,"green"},{Z,"red"},{L,"orange"},{J,"blue"}};
     QSet<int> pressedKeys={};
@@ -32,6 +34,7 @@ private:
     Engine* engine;
 signals:
     void enginePieceTypeChanged();
+
 };
 
 #endif // GAMEBOARD_H

@@ -9,6 +9,7 @@ class Board : public QWidget
 public:
     explicit Board(QWidget *parent = nullptr);
     Cell& getCell(int row,int col);
+    void clear();
 private:
     std::array<std::array<Cell,10>,20> board;
 signals:

@@ -22,3 +22,8 @@ PieceType NextBag::dequeue() {
 PieceType NextBag::at(int n) {
     return currentBag[n];
 }
+
+void NextBag::refresh() {
+    currentBag.clear();
+    AddBag();
+}

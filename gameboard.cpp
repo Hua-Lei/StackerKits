@@ -6,6 +6,7 @@ const int ARR = 10;
 GameBoard::GameBoard(QWidget *parent)
     : QWidget{parent}
 {
+    isGameOver = false;
     setFocusPolicy(Qt::ClickFocus);
     frameTimer = new QTimer();
     connect(frameTimer,&QTimer::timeout,this,&GameBoard::processKeys);
@@ -16,35 +17,43 @@ GameBoard::GameBoard(QWidget *parent)
     setAttribute(Qt::WA_KeyCompression, false); //TODO
     connect(engine,&Engine::updateRequired,this,QOverload<>::of(&QWidget::update));
     connect(engine,&Engine::pieceTypeChanged,this,&GameBoard::enginePieceTypeChanged);
+    connect(engine,&Engine::gameover,this,&GameBoard::terminate);
 
 }
 void GameBoard::keyPressEvent(QKeyEvent * event) {
-    switch(event->key()) {
-    case Qt::Key_Left:
-        pressedKeys.insert(event->key());
-        break;
-    case Qt::Key_Right:
-        pressedKeys.insert(event->key());
-        break;
-    case Qt::Key_Space:
-        engine->hardDrop();
-        break;
-    case Qt::Key_Down:
-        pressedKeys.insert(event->key());
-        break;
-    case Qt::Key_Z:
-        engine->rotateLeft();
-        break;
-    case Qt::Key_X:
-        engine->rotateRight();
-        break;
-    case Qt::Key_Shift:
-        engine->hold();
-        break;
-    default:
-        QWidget::keyPressEvent(event);
-        break;
+    if(event->key() == Qt::Key_R) {
+        isGameOver = false; //TODO: optimize code here
+        engine->restart();
     }
+    if(!isGameOver) {
+        switch(event->key()) {
+        case Qt::Key_Left:
+            pressedKeys.insert(event->key());
+            break;
+        case Qt::Key_Right:
+            pressedKeys.insert(event->key());
+            break;
+        case Qt::Key_Space:
+            engine->hardDrop();
+            break;
+        case Qt::Key_Down:
+            pressedKeys.insert(event->key());
+            break;
+        case Qt::Key_Z:
+            engine->rotateLeft();
+            break;
+        case Qt::Key_X:
+            engine->rotateRight();
+            break;
+        case Qt::Key_Shift:
+            engine->hold();
+            break;
+        default:
+            QWidget::keyPressEvent(event);
+            break;
+        }
+    }
+
 }
 
 void GameBoard::keyReleaseEvent(QKeyEvent * event) {
@@ -100,10 +109,11 @@ void GameBoard::processKeys() {
 }
 
 void GameBoard::paintEvent(QPaintEvent *){
+    QPainter painter(this);
     double cellLen = this->geometry().width()/10.0;
+    QRect border(0,0,width(),height());
     QSizeF sizef(cellLen,cellLen);
 
-    QPainter painter(this);
     for(int a = 0;a<20;a++) {
         for(int b = 0;b<10;b++){
             QPointF pos = board->getCell(a,b).getpos();
@@ -134,6 +144,12 @@ void GameBoard::paintEvent(QPaintEvent *){
             color.setAlpha(100);
             painter.fillRect(rectf,color);
         }
+    }
+    if(isGameOver) {
+        painter.setPen(QColor(Qt::red));
+        QFont font("Calibri",20*width()/120,QFont::Bold,false);
+        painter.setFont(font);
+        painter.drawText(border,Qt::AlignCenter,"GameOver");
     }
 }
 PieceType* GameBoard::holdPieceTypePtr() {

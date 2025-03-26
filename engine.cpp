@@ -324,7 +324,19 @@ void Engine::initPiecePos() {
     currentPiece->setPos(QPoint(4,1));
     auto [points,pos] = currentPiece->getPieceLoc();
     if(isCollision(points,pos)) {
+        emit gameover();
+        gravityTimer->stop();
         qDebug()<<"gameover!";
     }
     emit updateRequired();
+}
+
+void Engine::restart() {
+    nexts.refresh();
+    *currentPiece=Piece(nexts.dequeue(),QPoint(4,1));
+    holdPieceType = Invaild;
+    board->clear();
+    initPiecePos();
+    emit updateRequired();
+    emit pieceTypeChanged();
 }

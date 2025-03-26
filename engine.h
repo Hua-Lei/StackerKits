@@ -21,6 +21,7 @@ public:
     bool moveDown();
     void lock();
     void hold();
+    void restart();
     void rotateLeft();
     void rotateRight();
     void initPiecePos();
@@ -58,6 +59,7 @@ private:
 signals:
     void updateRequired();
     void pieceTypeChanged();
+    void gameover();
 };
 
 #endif // ENGINE_H

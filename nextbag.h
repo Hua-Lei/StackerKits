@@ -13,7 +13,7 @@ public:
     void AddBag();
     PieceType at(int n);
     PieceType dequeue();
-
+    void refresh();
 private:
     QQueue<PieceType> currentBag = {};
     QVector<PieceType> RandomBag = {I,O,S,Z,T,L,J};

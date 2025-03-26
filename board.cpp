@@ -16,4 +16,11 @@ Cell& Board::getCell(int row, int col)
     return board[row][col];
 }
 
+void Board::clear() {
+    for(int a = 0;a<20;a++) {
+        for(int b = 0;b<10;b++){
+            board[a][b].clear(); //行列和xy相反
+        }
+    }
+}
 
